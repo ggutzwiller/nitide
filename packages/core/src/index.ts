@@ -3,6 +3,7 @@ export * from './types.ts';
 export {
   DEFAULT_TIMEOUT_MS,
   OFF_BASE_URL,
+  OffTransientError,
   USER_AGENT,
   createOffClient,
   parseProduct,

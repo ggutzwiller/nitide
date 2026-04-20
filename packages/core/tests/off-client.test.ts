@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { OFF_BASE_URL, createOffClient, parseProduct } from '../src/off-client.ts';
+import {
+  OFF_BASE_URL,
+  OffTransientError,
+  createOffClient,
+  parseProduct,
+} from '../src/off-client.ts';
 import type { OFFProductResponse, OFFRawProduct, OFFSearchResponse } from '../src/types.ts';
 
 type FetchImpl = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
@@ -82,18 +87,53 @@ describe('createOffClient.fetchByBarcode', () => {
     expect(await client.fetchByBarcode('x')).toBeNull();
   });
 
-  it('returns null on HTTP 500', async () => {
+  it('throws OffTransientError on HTTP 500 so callers do not cache the miss', async () => {
     const fetchMock = mockFetch(async () => errorResponse(500));
     const client = createOffClient({ fetch: fetchMock });
-    expect(await client.fetchByBarcode('x')).toBeNull();
+    await expect(client.fetchByBarcode('x')).rejects.toBeInstanceOf(OffTransientError);
   });
 
-  it('returns null on a network error', async () => {
+  it('throws OffTransientError on HTTP 429 (rate-limited)', async () => {
+    const fetchMock = mockFetch(async () => errorResponse(429));
+    const client = createOffClient({ fetch: fetchMock });
+    await expect(client.fetchByBarcode('x')).rejects.toBeInstanceOf(OffTransientError);
+  });
+
+  it('propagates the Retry-After header in seconds on 429', async () => {
+    const fetchMock = mockFetch(
+      async () =>
+        new Response('', {
+          status: 429,
+          headers: { 'retry-after': '5' },
+        }),
+    );
+    const client = createOffClient({ fetch: fetchMock });
+    const err = await client.fetchByBarcode('x').catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(OffTransientError);
+    expect((err as OffTransientError).retryAfterMs).toBe(5_000);
+  });
+
+  it('tolerates a Retry-After HTTP date', async () => {
+    const future = new Date(Date.now() + 3_000).toUTCString();
+    const fetchMock = mockFetch(
+      async () =>
+        new Response('', {
+          status: 429,
+          headers: { 'retry-after': future },
+        }),
+    );
+    const client = createOffClient({ fetch: fetchMock });
+    const err = (await client.fetchByBarcode('x').catch((e: unknown) => e)) as OffTransientError;
+    expect(err.retryAfterMs).toBeGreaterThan(0);
+    expect(err.retryAfterMs).toBeLessThanOrEqual(3_000);
+  });
+
+  it('throws OffTransientError on network error', async () => {
     const fetchMock = mockFetch(async () => {
       throw new TypeError('network down');
     });
     const client = createOffClient({ fetch: fetchMock });
-    expect(await client.fetchByBarcode('x')).toBeNull();
+    await expect(client.fetchByBarcode('x')).rejects.toBeInstanceOf(OffTransientError);
   });
 
   it('returns null when the response has no product field', async () => {
@@ -102,7 +142,7 @@ describe('createOffClient.fetchByBarcode', () => {
     expect(await client.fetchByBarcode('x')).toBeNull();
   });
 
-  it('aborts and returns null when the request exceeds the timeout', async () => {
+  it('throws OffTransientError when the request exceeds the timeout', async () => {
     vi.useFakeTimers();
     const fetchMock = mockFetch(
       (_input, init) =>
@@ -115,8 +155,11 @@ describe('createOffClient.fetchByBarcode', () => {
     const client = createOffClient({ fetch: fetchMock, timeoutMs: 100 });
 
     const pending = client.fetchByBarcode('x');
+    // Subscribe to the rejection before advancing the fake clock, otherwise
+    // Vitest reports the transient reject as an unhandled rejection.
+    const assertion = expect(pending).rejects.toBeInstanceOf(OffTransientError);
     await vi.advanceTimersByTimeAsync(101);
-    await expect(pending).resolves.toBeNull();
+    await assertion;
   });
 
   it('encodes the EAN into the URL', async () => {
@@ -161,10 +204,10 @@ describe('createOffClient.searchByText', () => {
     expect(await client.searchByText('unknown')).toBeNull();
   });
 
-  it('returns null on HTTP error', async () => {
+  it('throws OffTransientError on HTTP error', async () => {
     const fetchMock = mockFetch(async () => errorResponse(503));
     const client = createOffClient({ fetch: fetchMock });
-    expect(await client.searchByText('x')).toBeNull();
+    await expect(client.searchByText('x')).rejects.toBeInstanceOf(OffTransientError);
   });
 });
 

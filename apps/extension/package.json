@@ -10,7 +10,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
   },
   "dependencies": {
     "@nitide/core": "workspace:*",
@@ -20,6 +20,7 @@
     "@crxjs/vite-plugin": "^2.0.0-beta.29",
     "@preact/preset-vite": "^2.9.4",
     "@types/chrome": "^0.0.291",
+    "happy-dom": "^15.11.7",
     "typescript": "^5.7.3",
     "vite": "^5.4.11",
     "vitest": "^2.1.8"

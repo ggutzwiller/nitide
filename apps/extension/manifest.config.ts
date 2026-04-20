@@ -27,7 +27,7 @@ export default defineManifest({
   },
   content_scripts: [
     {
-      js: ['src/content/index.ts'],
+      js: ['src/content/carrefour/index.ts'],
       matches: ['https://www.carrefour.fr/*'],
       run_at: 'document_idle',
     },

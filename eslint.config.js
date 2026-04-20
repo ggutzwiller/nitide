@@ -69,6 +69,8 @@ export default [
       'react/react-in-jsx-scope': 'off',
       'react/jsx-uses-react': 'off',
       'react/prop-types': 'off',
+      // Preact uses `class` / `for` rather than React's `className` / `htmlFor`.
+      'react/no-unknown-property': ['error', { ignore: ['class', 'for'] }],
     },
   },
   {

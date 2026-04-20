@@ -1,8 +1,12 @@
 // Open Food Facts v2 client.
 //
 // Design:
-// - Every failure mode (timeout, network, 4xx, 5xx, status=0, empty search) maps
-//   to `null`. Callers never see an exception from here.
+// - Definitively "not found" (HTTP 404, `status: 0`, empty search results) is
+//   returned as `null` so callers can cache it.
+// - Transient failures (HTTP 429, 5xx, network error, timeout) throw
+//   `OffTransientError`. The caller is expected to surface a null to the user
+//   *without* caching it — otherwise a temporary OFF outage would blacklist
+//   working products for the whole negative-TTL window.
 // - `fetch` is injectable so tests never touch the network.
 // - User-Agent is set as a courtesy; Chromium will strip it from extension
 //   fetches in practice, but it helps when the client runs in Node.
@@ -19,6 +23,32 @@ import type {
 export const OFF_BASE_URL = 'https://world.openfoodfacts.org';
 export const DEFAULT_TIMEOUT_MS = 8_000;
 export const USER_AGENT = 'Nitide/0.1.0 (contact@nitide.fr)';
+
+export class OffTransientError extends Error {
+  constructor(
+    public readonly status: number,
+    /**
+     * Server-suggested back-off, in milliseconds. Parsed from the HTTP
+     * `Retry-After` header when OFF rate-limits us. Undefined when OFF did not
+     * advertise a cool-down (older endpoints, network-level failures, etc.) —
+     * callers should fall back to a sensible default.
+     */
+    public readonly retryAfterMs: number | undefined = undefined,
+  ) {
+    super(`OFF transient error (HTTP ${status})`);
+    this.name = 'OffTransientError';
+  }
+}
+
+function parseRetryAfter(header: string | null, now: number = Date.now()): number | undefined {
+  if (!header) return undefined;
+  const trimmed = header.trim();
+  const seconds = Number(trimmed);
+  if (Number.isFinite(seconds) && seconds >= 0) return Math.round(seconds * 1_000);
+  const at = Date.parse(trimmed);
+  if (Number.isFinite(at)) return Math.max(0, at - now);
+  return undefined;
+}
 
 const REQUESTED_FIELDS = [
   'code',
@@ -60,10 +90,16 @@ export function createOffClient(deps: OffClientDeps = {}): OffClient {
           Accept: 'application/json',
         },
       });
+      if (res.status === 429 || res.status >= 500) {
+        const retryAfterMs = parseRetryAfter(res.headers.get('retry-after'));
+        throw new OffTransientError(res.status, retryAfterMs);
+      }
       if (!res.ok) return null;
       return (await res.json()) as T;
-    } catch {
-      return null;
+    } catch (err) {
+      if (err instanceof OffTransientError) throw err;
+      // Aborts, DNS / network issues, JSON parse errors — all transient.
+      throw new OffTransientError(0);
     } finally {
       clearTimeout(timer);
     }
