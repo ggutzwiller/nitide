@@ -1,0 +1,9 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# Native/post-install scripts allowlist (pnpm 10+ is strict by default).
+onlyBuiltDependencies:
+  - sharp
+  - esbuild
+  - '@parcel/watcher'

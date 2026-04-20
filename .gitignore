@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+.astro/
+.output/
+.vite/
+
+# Extension artefacts
+apps/extension/.crx/
+*.crx
+*.pem
+*.zip
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editors & OS
+.DS_Store
+.vscode/
+!.vscode/extensions.json
+.idea/
+Thumbs.db
+
+# Coverage
+coverage/

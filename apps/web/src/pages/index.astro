@@ -1,0 +1,80 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <main class="flex min-h-screen flex-col">
+    <div class="flex flex-1 items-center justify-center px-6">
+      <div class="w-full max-w-2xl text-center">
+        <div class="mb-10 flex justify-center">
+          <svg
+            aria-hidden="true"
+            width="64"
+            height="64"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="64" height="64" rx="14" fill="#1F3D2B"></rect>
+            <path
+              d="M18 46 V18 L42 40 V18"
+              stroke="#FAF6EE"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"></path>
+            <circle cx="46" cy="46" r="3" fill="#D4A24C"></circle>
+          </svg>
+        </div>
+
+        <h1 class="mb-6 text-5xl leading-[1.05] text-green-dark sm:text-6xl">
+          <em class="italic">Nitide</em> — bientôt disponible.
+        </h1>
+
+        <p class="mx-auto max-w-lg text-lg text-ink-muted">
+          Les scores Nutri-Score, Green-Score et Nova directement dans tes courses en ligne. Sans
+          scanner, sans tracking, sans friction.
+        </p>
+
+        <div class="mt-12 flex flex-wrap items-center justify-center gap-3 text-sm">
+          <span
+            class="rounded-full border border-border-soft bg-white/60 px-4 py-1.5 text-ink-muted"
+          >
+            Open source
+          </span>
+          <span
+            class="rounded-full border border-border-soft bg-white/60 px-4 py-1.5 text-ink-muted"
+          >
+            Basé sur Open Food Facts
+          </span>
+          <span
+            class="rounded-full border border-border-soft bg-white/60 px-4 py-1.5 text-ink-muted"
+          >
+            Chrome · Manifest V3
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <footer class="border-t border-border-soft px-6 py-6 text-center text-sm text-ink-muted">
+      <p>
+        Données fournies par
+        <a
+          href="https://openfoodfacts.org"
+          class="text-green-dark underline decoration-green-sage underline-offset-4 transition hover:decoration-amber-ocre"
+          rel="noopener"
+        >
+          Open Food Facts
+        </a>
+        sous licence ODbL · Projet
+        <a
+          href="https://github.com/ggutzwiller/nitide"
+          class="text-green-dark underline decoration-green-sage underline-offset-4 transition hover:decoration-amber-ocre"
+          rel="noopener"
+        >
+          open source
+        </a>
+      </p>
+    </footer>
+  </main>
+</Layout>

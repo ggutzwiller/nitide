@@ -1,0 +1,25 @@
+{
+  "name": "@nitide/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Nitide landing — Astro + Tailwind, deployed to GitHub Pages.",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/tailwind": "^5.1.4",
+    "astro": "^5.1.1",
+    "tailwindcss": "^3.4.17"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

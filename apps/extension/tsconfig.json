@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["src/**/*", "vite.config.ts", "manifest.config.ts"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": ["chrome", "vite/client"],
+    "paths": {
+      "@nitide/core": ["../../packages/core/src/index.ts"],
+      "@nitide/core/*": ["../../packages/core/src/*"]
+    }
+  }
+}

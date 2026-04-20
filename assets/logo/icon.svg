@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Nitide">
+  <title>Nitide</title>
+  <rect width="128" height="128" rx="28" fill="#1F3D2B"/>
+  <path
+    d="M32 96 V32 L96 80 V32"
+    fill="none"
+    stroke="#FAF6EE"
+    stroke-width="8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle cx="96" cy="96" r="6" fill="#D4A24C"/>
+</svg>

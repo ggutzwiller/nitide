@@ -1,0 +1,9 @@
+node_modules
+dist
+.astro
+.output
+build
+coverage
+pnpm-lock.yaml
+apps/extension/public/icons
+apps/web/public
