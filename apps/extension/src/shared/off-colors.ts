@@ -47,12 +47,12 @@ export const GREEN_SCORE_HINT =
   'Impact environnemental : émissions CO₂, emballage, origine, effet sur les écosystèmes';
 
 /**
- * Short labels matching the three score families. Used for the chip row next
- * to the product tile and for tooltip headings.
+ * Compact labels shown under each score in the on-tile badge. Kept short so the
+ * unified badge stays small; the tooltip spells out the full score names.
  */
-export const SCORE_KIND_LABEL = {
-  nutri: 'Nutri-Score',
-  green: 'Green-Score',
+export const SCORE_KIND_SHORT = {
+  nutri: 'Nutri',
+  green: 'Green',
   nova: 'Nova',
 } as const;
 

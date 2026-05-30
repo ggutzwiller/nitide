@@ -7,7 +7,7 @@ import {
   GREEN_SCORE_COLORS,
   NOVA_COLORS,
   NUTRI_SCORE_COLORS,
-  SCORE_KIND_LABEL,
+  SCORE_KIND_SHORT,
   contrastTextColor,
 } from '../../shared/off-colors.ts';
 import { showTooltip, hideTooltip } from './tooltip.tsx';
@@ -25,55 +25,60 @@ const SHADOW_STYLES = /* css */ `
   display: inline-block;
   margin-top: 8px;
 }
-.row {
+.unit {
   display: inline-flex;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  align-items: center;
-  font-family: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
-}
-.pair {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  align-items: stretch;
+  background: #FAF6EE;
+  border: 1px solid #E5E1D6;
+  border-radius: 12px;
+  overflow: hidden;
   cursor: help;
-}
-.kind {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #5C5C5C;
-  line-height: 1;
-}
-.chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 24px;
-  height: 22px;
-  padding: 0 8px;
-  border-radius: 11px;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.02em;
   user-select: none;
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.10);
+  font-family: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition:
     transform 180ms ease,
     box-shadow 180ms ease;
 }
-.pair:hover .chip,
-.pair:focus-within .chip {
+.unit:hover,
+.unit:focus-visible {
   transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.13);
+}
+.unit:focus {
+  outline: none;
+}
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 11px;
+}
+.cell + .cell {
+  border-left: 1px solid #E5E1D6;
+}
+.dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
   box-shadow:
-    0 4px 10px rgba(0, 0, 0, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
     inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+}
+.lbl {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #5C5C5C;
+  line-height: 1;
 }
 `;
 
@@ -111,12 +116,15 @@ export function renderBadge(element: HTMLElement, product: Product | null): void
   style.textContent = SHADOW_STYLES;
   shadow.appendChild(style);
 
-  const row = document.createElement('div');
-  row.className = 'row';
+  const unit = document.createElement('div');
+  unit.className = 'unit';
+  unit.tabIndex = 0;
+  unit.setAttribute('role', 'group');
+  unit.setAttribute('aria-label', 'Scores Open Food Facts');
   for (const chip of chips) {
-    row.appendChild(buildPairElement(chip));
+    unit.appendChild(buildCellElement(chip));
   }
-  shadow.appendChild(row);
+  shadow.appendChild(unit);
 
   attachHoverHandlers(host, product);
 
@@ -168,31 +176,30 @@ function novaChip(group: NovaGroup): ChipConfig {
     kind: 'nova',
     label: String(group),
     background: NOVA_COLORS[group],
-    ariaLabel: `Nova groupe ${group}`,
+    ariaLabel: `Nova group ${group}`,
   };
 }
 
-function buildPairElement(config: ChipConfig): HTMLSpanElement {
-  const pair = document.createElement('span');
-  pair.className = 'pair';
-  pair.dataset['kind'] = config.kind;
-  pair.setAttribute('role', 'img');
-  pair.setAttribute('aria-label', config.ariaLabel);
-  pair.tabIndex = 0;
+function buildCellElement(config: ChipConfig): HTMLSpanElement {
+  const cell = document.createElement('span');
+  cell.className = 'cell';
+  cell.dataset['kind'] = config.kind;
+  cell.setAttribute('role', 'img');
+  cell.setAttribute('aria-label', config.ariaLabel);
+
+  const dot = document.createElement('span');
+  dot.className = 'dot';
+  dot.style.background = config.background;
+  dot.style.color = contrastTextColor(config.background);
+  dot.textContent = config.label;
 
   const label = document.createElement('span');
-  label.className = 'kind';
-  label.textContent = SCORE_KIND_LABEL[config.kind];
+  label.className = 'lbl';
+  label.textContent = SCORE_KIND_SHORT[config.kind];
 
-  const chip = document.createElement('span');
-  chip.className = 'chip';
-  chip.style.background = config.background;
-  chip.style.color = contrastTextColor(config.background);
-  chip.textContent = config.label;
-
-  pair.appendChild(label);
-  pair.appendChild(chip);
-  return pair;
+  cell.appendChild(dot);
+  cell.appendChild(label);
+  return cell;
 }
 
 function attachHoverHandlers(host: HTMLElement, product: Product): void {

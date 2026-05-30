@@ -22,10 +22,7 @@ let hideTimer: ReturnType<typeof setTimeout> | null = null;
 let hostRef: HTMLDivElement | null = null;
 
 export function showTooltip(product: Product, anchor: HTMLElement): void {
-  if (hideTimer) {
-    clearTimeout(hideTimer);
-    hideTimer = null;
-  }
+  cancelHide();
   const host = ensureHost();
   const shadow = host.shadowRoot!;
   const target = shadow.querySelector<HTMLDivElement>('#root')!;
@@ -35,6 +32,9 @@ export function showTooltip(product: Product, anchor: HTMLElement): void {
   positionAt(host, anchor);
   host.style.visibility = 'visible';
   host.style.opacity = '1';
+  // Enable interaction so the user can click the Open Food Facts link. Reset to
+  // 'none' on hide so the invisible fixed-position box never blocks page clicks.
+  host.style.pointerEvents = 'auto';
 }
 
 export function hideTooltip(): void {
@@ -43,9 +43,17 @@ export function hideTooltip(): void {
     if (hostRef) {
       hostRef.style.opacity = '0';
       hostRef.style.visibility = 'hidden';
+      hostRef.style.pointerEvents = 'none';
     }
     hideTimer = null;
   }, GRACE_MS);
+}
+
+function cancelHide(): void {
+  if (hideTimer) {
+    clearTimeout(hideTimer);
+    hideTimer = null;
+  }
 }
 
 function ensureHost(): HTMLDivElement {
@@ -60,6 +68,12 @@ function ensureHost(): HTMLDivElement {
   host.style.transition = 'opacity 140ms ease';
   host.style.opacity = '0';
   host.style.visibility = 'hidden';
+
+  // Hover bridge: keep the tooltip alive while the pointer is over it (the badge
+  // fires hideTooltip on mouseleave), so the user can cross onto the tooltip and
+  // click the OFF link; leaving the tooltip then dismisses it.
+  host.addEventListener('mouseenter', cancelHide);
+  host.addEventListener('mouseleave', hideTooltip);
 
   const shadow = host.attachShadow({ mode: 'open' });
   const style = document.createElement('style');
@@ -156,7 +170,6 @@ function ScoreRow({
 }
 
 const TOOLTIP_STYLES = /* css */ `
-:host, #root { pointer-events: auto; }
 .card {
   background: #FFFFFF;
   color: #1A1A1A;

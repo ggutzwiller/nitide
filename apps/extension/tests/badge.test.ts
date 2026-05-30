@@ -28,36 +28,36 @@ describe('renderBadge', () => {
     document.body.innerHTML = '';
   });
 
-  it('renders three chips when all three scores are present', () => {
+  it('renders three cells when all three scores are present', () => {
     const tile = buildTile();
     renderBadge(tile, FULL_PRODUCT);
 
     const host = tile.querySelector('span.nitide-badges-host');
     expect(host).not.toBeNull();
     const shadow = host!.shadowRoot!;
-    const pairs = shadow.querySelectorAll('.pair');
-    expect(pairs).toHaveLength(3);
+    const cells = shadow.querySelectorAll('.cell');
+    expect(cells).toHaveLength(3);
 
-    const kinds = Array.from(pairs).map((el) => (el as HTMLElement).dataset['kind']);
+    const kinds = Array.from(cells).map((el) => (el as HTMLElement).dataset['kind']);
     expect(kinds).toEqual(['nutri', 'green', 'nova']);
   });
 
-  it('surfaces a human kind label alongside each chip', () => {
+  it('surfaces a short kind label under each score', () => {
     const tile = buildTile();
     renderBadge(tile, FULL_PRODUCT);
     const shadow = tile.querySelector('span.nitide-badges-host')!.shadowRoot!;
-    const labels = Array.from(shadow.querySelectorAll<HTMLElement>('.kind')).map(
+    const labels = Array.from(shadow.querySelectorAll<HTMLElement>('.lbl')).map(
       (el) => el.textContent,
     );
-    expect(labels).toEqual(['Nutri-Score', 'Green-Score', 'Nova']);
+    expect(labels).toEqual(['Nutri', 'Green', 'Nova']);
   });
 
-  it('omits missing scores instead of rendering empty chips', () => {
+  it('omits missing scores instead of rendering empty cells', () => {
     const tile = buildTile();
     renderBadge(tile, { ...FULL_PRODUCT, greenScore: null, nova: null });
 
     const shadow = tile.querySelector('span.nitide-badges-host')!.shadowRoot!;
-    expect(shadow.querySelectorAll('.pair')).toHaveLength(1);
+    expect(shadow.querySelectorAll('.cell')).toHaveLength(1);
   });
 
   it('does nothing when the product is null', () => {
@@ -81,9 +81,9 @@ describe('renderBadge', () => {
 
     const hosts = tile.querySelectorAll('span.nitide-badges-host');
     expect(hosts).toHaveLength(1);
-    const pair = hosts[0]!.shadowRoot!.querySelector<HTMLElement>('.pair[data-kind="nutri"]');
-    const chip = pair?.querySelector<HTMLElement>('.chip');
-    expect(chip?.textContent).toBe('A');
+    const cell = hosts[0]!.shadowRoot!.querySelector<HTMLElement>('.cell[data-kind="nutri"]');
+    const dot = cell?.querySelector<HTMLElement>('.dot');
+    expect(dot?.textContent).toBe('A');
   });
 
   it('prefers the __flags slot when available, falls back to the article', () => {
