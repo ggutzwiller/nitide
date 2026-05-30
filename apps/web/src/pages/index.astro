@@ -1,20 +1,51 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// Demo products — real Open Food Facts data (frozen snapshot).
+const good = {
+  name: 'Maïs doux',
+  img: '/demo/mais-doux.jpg',
+  price: '1,29 €',
+  nutri: { v: 'A', color: '#008240' },
+  green: { v: 'B', color: '#78B14F' },
+  nova: { v: '1', color: '#448747' },
+  off: 'https://world.openfoodfacts.org/product/3017800237113',
+};
+const bad = {
+  name: 'Kinder Bueno',
+  brand: 'Kinder',
+  img: '/demo/kinder-bueno.jpg',
+  price: '1,89 €',
+  nutri: { v: 'E', color: '#E63312' },
+  green: { v: 'E', color: '#E8471B' },
+  nova: { v: '4', color: '#E73834' },
+};
+
+const levels = [
+  ['Matières grasses', 'Faible', '#008240'],
+  ['Saturés', 'Faible', '#008240'],
+  ['Sucres', 'Modéré', '#EE8100'],
+  ['Sel', 'Faible', '#008240'],
+];
+const nutrition = [
+  ['Énergie', '77 kcal'],
+  ['Matières grasses', '1,8 g'],
+  ['dont saturés', '0,4 g'],
+  ['Glucides', '11 g'],
+  ['dont sucres', '5 g'],
+  ['Fibres', '2,8 g'],
+  ['Protéines', '2,7 g'],
+  ['Sel', '0 g'],
+];
 ---
 
 <Layout>
   <main class="flex min-h-screen flex-col">
-    <div class="flex flex-1 items-center justify-center px-6">
-      <div class="w-full max-w-2xl text-center">
+    <!-- Hero -->
+    <section class="px-6 pt-28 pb-16 text-center sm:pt-36 sm:pb-20">
+      <div class="mx-auto max-w-2xl">
         <div class="mb-10 flex justify-center">
-          <svg
-            aria-hidden="true"
-            width="64"
-            height="64"
-            viewBox="0 0 64 64"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg aria-hidden="true" width="64" height="64" viewBox="0 0 64 64" fill="none">
             <rect width="64" height="64" rx="14" fill="#1F3D2B"></rect>
             <path
               d="M18 46 V18 L42 40 V18"
@@ -35,28 +66,259 @@ import Layout from '../layouts/Layout.astro';
           Les scores Nutri-Score, Green-Score et Nova directement dans tes courses en ligne. Sans
           scanner, sans tracking, sans friction.
         </p>
+      </div>
+    </section>
 
-        <div class="mt-12 flex flex-wrap items-center justify-center gap-3 text-sm">
-          <span
-            class="rounded-full border border-border-soft bg-white/60 px-4 py-1.5 text-ink-muted"
-          >
-            Open source
-          </span>
-          <span
-            class="rounded-full border border-border-soft bg-white/60 px-4 py-1.5 text-ink-muted"
-          >
-            Basé sur Open Food Facts
-          </span>
-          <span
-            class="rounded-full border border-border-soft bg-white/60 px-4 py-1.5 text-ink-muted"
-          >
-            Chrome · Manifest V3
-          </span>
+    <!-- Demo: what the extension shows, on real Open Food Facts products. -->
+    <section class="px-6 pb-24">
+      <div class="mx-auto max-w-5xl">
+        <div class="mx-auto mb-12 max-w-xl text-center">
+          <h2 class="text-4xl text-green-dark">
+            Concrètement, <em class="italic">ça donne ça</em>.
+          </h2>
+        </div>
+
+        <div class="grid items-start gap-10 md:grid-cols-[1fr_minmax(0,21rem)] md:gap-12">
+          <!-- List tiles with the unified score badge -->
+          <div>
+            <p class="mb-4 text-xs font-semibold uppercase tracking-[0.07em] text-green-sage">
+              Sur les listes de produits
+            </p>
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Good product -->
+              <article class="rounded-2xl border border-border-soft bg-white p-3.5 shadow-sm">
+                <img
+                  src={good.img}
+                  alt={good.name}
+                  width="440"
+                  height="440"
+                  loading="lazy"
+                  class="mb-3 aspect-square w-full rounded-xl bg-white object-contain"
+                />
+                <p class="text-sm font-semibold leading-tight">{good.name}</p>
+                <p class="mb-3 mt-1 text-[15px] font-bold">{good.price}</p>
+                <div
+                  class="inline-flex items-stretch overflow-hidden rounded-xl border border-border-soft bg-cream"
+                >
+                  {
+                    [
+                      [good.nutri, 'Nutri'],
+                      [good.green, 'Green'],
+                      [good.nova, 'Nova'],
+                    ].map(([s, label], i) => (
+                      <span
+                        class:list={[
+                          'flex flex-col items-center gap-1 px-2.5 py-1.5',
+                          i > 0 && 'border-l border-border-soft',
+                        ]}
+                      >
+                        <span
+                          class="flex h-6 w-6 items-center justify-center rounded-full text-[13px] font-extrabold text-white"
+                          style={`background:${s.color}`}
+                        >
+                          {s.v}
+                        </span>
+                        <span class="text-[8px] font-bold uppercase tracking-[0.07em] text-ink-muted">
+                          {label}
+                        </span>
+                      </span>
+                    ))
+                  }
+                </div>
+              </article>
+
+              <!-- Bad product -->
+              <article class="rounded-2xl border border-border-soft bg-white p-3.5 shadow-sm">
+                <img
+                  src={bad.img}
+                  alt={`${bad.name} — ${bad.brand}`}
+                  width="440"
+                  height="440"
+                  loading="lazy"
+                  class="mb-3 aspect-square w-full rounded-xl bg-white object-contain"
+                />
+                <p class="text-sm font-semibold leading-tight">{bad.name}</p>
+                <p class="text-xs text-ink-muted">{bad.brand}</p>
+                <p class="mb-3 mt-1 text-[15px] font-bold">{bad.price}</p>
+                <div
+                  class="inline-flex items-stretch overflow-hidden rounded-xl border border-border-soft bg-cream"
+                >
+                  {
+                    [
+                      [bad.nutri, 'Nutri'],
+                      [bad.green, 'Green'],
+                      [bad.nova, 'Nova'],
+                    ].map(([s, label], i) => (
+                      <span
+                        class:list={[
+                          'flex flex-col items-center gap-1 px-2.5 py-1.5',
+                          i > 0 && 'border-l border-border-soft',
+                        ]}
+                      >
+                        <span
+                          class="flex h-6 w-6 items-center justify-center rounded-full text-[13px] font-extrabold text-white"
+                          style={`background:${s.color}`}
+                        >
+                          {s.v}
+                        </span>
+                        <span class="text-[8px] font-bold uppercase tracking-[0.07em] text-ink-muted">
+                          {label}
+                        </span>
+                      </span>
+                    ))
+                  }
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- Detail panel (the good product) -->
+          <div>
+            <p class="mb-4 text-xs font-semibold uppercase tracking-[0.07em] text-green-sage">
+              Sur la fiche produit
+            </p>
+            <div
+              class="overflow-hidden rounded-2xl border border-border-soft bg-white text-[13px] leading-snug shadow-xl"
+            >
+              <div class="flex items-center gap-2 border-b border-border-soft bg-cream px-4 py-3">
+                <svg class="h-[22px] w-[22px]" viewBox="0 0 64 64" aria-hidden="true">
+                  <rect width="64" height="64" rx="14" fill="#1F3D2B"></rect>
+                  <path
+                    d="M18 46 V18 L42 40 V18"
+                    stroke="#FAF6EE"
+                    stroke-width="4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    fill="none"></path>
+                  <circle cx="46" cy="46" r="3" fill="#D4A24C"></circle>
+                </svg>
+                <span class="font-bold text-green-dark">
+                  Nitide
+                  <span class="block text-[11px] font-medium text-ink-muted">{good.name}</span>
+                </span>
+              </div>
+
+              <div class="px-4 py-3.5">
+                <!-- Scores -->
+                <div>
+                  <h3
+                    class="mb-2.5 text-[11px] font-bold uppercase tracking-[0.06em] text-ink-muted"
+                  >
+                    Scores
+                  </h3>
+                  <div class="space-y-2.5">
+                    {
+                      [
+                        [good.nutri.v, good.nutri.color, 'Nutri-Score', 'Qualité nutritionnelle'],
+                        [good.green.v, good.green.color, 'Green-Score', 'Impact environnemental'],
+                        [
+                          good.nova.v,
+                          good.nova.color,
+                          'Nova',
+                          'Degré de transformation (1 = brut)',
+                        ],
+                      ].map(([v, color, name, expl]) => (
+                        <div class="flex items-center gap-3">
+                          <span
+                            class="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-full text-base font-extrabold text-white"
+                            style={`background:${color}`}
+                          >
+                            {v}
+                          </span>
+                          <span>
+                            <span class="font-bold">{name}</span>
+                            <br />
+                            <span class="text-xs text-ink-muted">{expl}</span>
+                          </span>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
+
+                <!-- Nutrient levels -->
+                <div class="mt-4 border-t border-[#F1ECE0] pt-4">
+                  <h3
+                    class="mb-2.5 text-[11px] font-bold uppercase tracking-[0.06em] text-ink-muted"
+                  >
+                    Repères nutritionnels
+                  </h3>
+                  <div class="grid grid-cols-2 gap-2">
+                    {
+                      levels.map(([name, lvl, color]) => (
+                        <div class="flex items-center gap-2 rounded-lg bg-cream px-2.5 py-1.5">
+                          <span
+                            class="h-2.5 w-2.5 flex-none rounded-full"
+                            style={`background:${color}`}
+                          />
+                          <span class="flex-1 text-xs">{name}</span>
+                          <span class="text-[11px] font-bold" style={`color:${color}`}>
+                            {lvl}
+                          </span>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
+
+                <!-- Nutrition table -->
+                <div class="mt-4 border-t border-[#F1ECE0] pt-4">
+                  <h3
+                    class="mb-2.5 text-[11px] font-bold uppercase tracking-[0.06em] text-ink-muted"
+                  >
+                    Valeurs nutritionnelles / 100 g
+                  </h3>
+                  <table class="w-full border-collapse text-[12.5px]">
+                    {
+                      nutrition.map(([k, v]) => (
+                        <tr class="border-b border-[#F4EFE4] last:border-0">
+                          <td class="py-1">{k}</td>
+                          <td class="py-1 text-right font-bold tabular-nums">{v}</td>
+                        </tr>
+                      ))
+                    }
+                  </table>
+                </div>
+
+                <!-- Characteristics -->
+                <div class="mt-4 border-t border-[#F1ECE0] pt-4">
+                  <h3
+                    class="mb-2.5 text-[11px] font-bold uppercase tracking-[0.06em] text-ink-muted"
+                  >
+                    Caractéristiques
+                  </h3>
+                  <div class="flex flex-wrap gap-1.5">
+                    {
+                      ['Végan', 'Végétarien', 'Sans huile de palme'].map((b) => (
+                        <span class="rounded-full border border-[#DDE6D8] bg-[#EEF3EC] px-2.5 py-0.5 text-[11px] font-semibold text-green-dark">
+                          {b}
+                        </span>
+                      ))
+                    }
+                  </div>
+                  <p class="mt-2 text-xs text-ink-muted">
+                    <b class="font-semibold text-ink">Additifs :</b> aucun
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="border-t border-border-soft bg-cream px-4 py-2.5 text-[11px] text-ink-muted"
+              >
+                Source :
+                <a href={good.off} class="font-semibold text-green-dark" rel="noopener">
+                  Open Food Facts
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <footer class="border-t border-border-soft px-6 py-6 text-center text-sm text-ink-muted">
+    <footer
+      class="mt-auto border-t border-border-soft px-6 py-6 text-center text-sm text-ink-muted"
+    >
       <p>
         Données fournies par
         <a
@@ -66,15 +328,9 @@ import Layout from '../layouts/Layout.astro';
         >
           Open Food Facts
         </a>
-        sous licence ODbL · Projet
-        <a
-          href="https://github.com/ggutzwiller/nitide"
-          class="text-green-dark underline decoration-green-sage underline-offset-4 transition hover:decoration-amber-ocre"
-          rel="noopener"
-        >
-          open source
-        </a>
+        sous licence ODbL
       </p>
+      <p class="mt-2 text-xs">Photos produit : Open Food Facts (CC BY-SA)</p>
     </footer>
   </main>
 </Layout>
