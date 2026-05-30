@@ -36,3 +36,11 @@ coverage/
 
 # Misc
 .claude/
+
+# Open Food Facts data dumps (huge — never commit; used locally to build the slim scores subset)
+openfoodfacts-products.jsonl
+*.jsonl
+*.jsonl.gz
+# Intermediate subset artefacts produced by scripts/off-subset.sql
+scripts/off-scores-*.csv
+scripts/off-subset.out

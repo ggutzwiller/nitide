@@ -1,75 +1,40 @@
-// The OFF lookup + cache logic that runs inside the service worker.
-// Keeping it in its own module makes it trivially testable — no chrome API,
-// no live network.
+// Resolves a DOM-extracted product to its scores, using the bundled FR dataset
+// only — no network. A miss returns null (no badge). This is what keeps a full
+// page of tiles at zero network requests, so OFF's rate limit can never bite.
+//
+// If we later want live OFF lookups (hover / product page), that path will be
+// built separately with its own trigger — it deliberately does not exist yet.
+import type { MatchInput, Product, ScoreTriple, ScoresDataset } from '@nitide/core';
 
-import {
-  OffTransientError,
-  TtlCache,
-  createOffClient,
-  matchProduct,
-  type AsyncKeyValueStorage,
-  type MatchInput,
-  type OffClient,
-  type Product,
-} from '@nitide/core';
-import { RateLimiter, type RateLimiterOptions } from '../content/carrefour/throttle.ts';
-
-export interface MatcherDeps {
-  client?: OffClient;
-  storage?: AsyncKeyValueStorage;
-  limiter?: RateLimiter;
-  rateLimit?: RateLimiterOptions;
-  /**
-   * How many times a transient failure (429, 5xx, network) is retried before
-   * giving up and returning `null`. Defaults to 1 — one retry plus the initial
-   * attempt.
-   */
-  maxRetries?: number;
-  /**
-   * Fallback pause in milliseconds when OFF does not advertise a `Retry-After`.
-   * Defaults to 10 s.
-   */
-  defaultBackoffMs?: number;
-}
+// Where OFF hosts product pages — used to build the "view on Open Food Facts"
+// link on a matched product.
+const OFF_PRODUCT_URL = 'https://world.openfoodfacts.org/product';
 
 export interface Matcher {
-  match(input: MatchInput): Promise<Product | null>;
+  /** Look a product up in the bundled dataset. Synchronous; null on a miss. */
+  match(input: MatchInput): Product | null;
 }
 
-export function createMatcher(deps: MatcherDeps = {}): Matcher {
-  const limiter = deps.limiter ?? new RateLimiter(deps.rateLimit);
-  // Every outbound HTTP request is funneled through the limiter so bursty
-  // tabs never exceed OFF's limits. Cache hits bypass it entirely.
-  const client =
-    deps.client ??
-    createOffClient({
-      fetch: (input, init) => limiter.run(() => globalThis.fetch(input, init)),
-    });
-
-  const cache = deps.storage ? new TtlCache(deps.storage) : undefined;
-  const matchDeps = cache ? { client, cache } : { client };
-  const maxRetries = deps.maxRetries ?? 1;
-  const defaultBackoffMs = deps.defaultBackoffMs ?? 10_000;
-
+export function createMatcher(dataset: ScoresDataset | null): Matcher {
   return {
-    async match(input) {
-      for (let attempt = 0; attempt <= maxRetries; attempt++) {
-        try {
-          return await matchProduct(input, matchDeps);
-        } catch (err) {
-          if (err instanceof OffTransientError) {
-            // Freeze the whole limiter — sibling in-flight calls will honour
-            // the cool-down too, and the retry below waits it out naturally
-            // via the next `acquire()`.
-            limiter.pause(err.retryAfterMs ?? defaultBackoffMs);
-            if (attempt < maxRetries) continue;
-          }
-          // Either the final retry failed, or an unexpected non-transient
-          // error bubbled up. Degrade gracefully without caching the miss.
-          return null;
-        }
-      }
-      return null;
+    match(input) {
+      if (!input.ean || !dataset) return null;
+      const triple = dataset.lookup(input.ean);
+      return triple ? toProduct(input, input.ean, triple) : null;
     },
+  };
+}
+
+// Name/brand come from the DOM-extracted input; scores from the dataset; the OFF
+// URL is derived from the EAN. Additives/allergens aren't in the dataset.
+function toProduct(input: MatchInput, ean: string, triple: ScoreTriple): Product {
+  return {
+    ean,
+    name: input.name,
+    brand: input.brand ?? null,
+    nutriScore: triple.nutriScore,
+    greenScore: triple.greenScore,
+    nova: triple.nova,
+    offUrl: `${OFF_PRODUCT_URL}/${encodeURIComponent(ean)}`,
   };
 }
