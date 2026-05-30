@@ -36,6 +36,8 @@ Donner aux consommateurs français la transparence nutritionnelle et environneme
 - **Cache** : `chrome.storage.local`, TTL 30 jours, clé = code EAN ou hash(nom+marque).
 - **Settings** : aucun (zero-config). Page d'options viendra plus tard.
 
+> **Mise à jour 2026-05-30 — source des scores.** L'appel API en rafale sur les pages de liste déclenchait des 429 (l'API OFF produit limite à ~10 req en burst). Décision : les badges sont désormais servis par un **dataset FR bundlé** (`EAN→{nutri,green,nova}`, 587 471 produits, ~2 Mo), lookup local instantané, **aucun appel réseau**. Tout le code d'appel à l'API OFF (client, cache, throttle, recherche texte des points 1-2 ci-dessus) a été **retiré** : produit absent du dataset = pas de badge. Un éventuel lookup live (survol/fiche) sera rebâti plus tard avec son propre déclencheur. Détails : [spec](docs/superpowers/specs/2026-05-30-scores-dataset-design.md). Régénération du dataset : `pnpm dataset:build`.
+
 ### Landing page
 
 - **URL** : nitide.fr

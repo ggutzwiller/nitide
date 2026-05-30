@@ -26,8 +26,10 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "pnpm -r --if-present typecheck",
+    "typecheck": "pnpm -r --if-present typecheck && pnpm typecheck:scripts",
+    "typecheck:scripts": "tsc -p scripts/tsconfig.json",
     "icons:generate": "tsx scripts/generate-icons.ts",
+    "dataset:build": "duckdb < scripts/build-scores-fr.sql && tsx scripts/build-scores-dataset.ts",
     "clean": "pnpm -r exec rm -rf dist .astro .output node_modules && rm -rf node_modules"
   },
   "devDependencies": {

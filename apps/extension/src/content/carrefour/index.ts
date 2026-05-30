@@ -1,9 +1,9 @@
 // Content script entry point for carrefour.fr.
 //
-// MV3 content scripts share the page origin (carrefour.fr) and are therefore
-// subject to CORS. OFF does not allow arbitrary origins, so the content script
-// never fetches OFF directly — it proxies every lookup through the service
-// worker via `chrome.runtime.sendMessage`. See src/background for the handler.
+// The content script lives in the page world: it sees the Carrefour DOM but not
+// the bundled scores dataset, which the service worker holds. So every lookup is
+// proxied to the worker via `chrome.runtime.sendMessage`. See src/background for
+// the handler.
 
 import type { Product } from '@nitide/core';
 import { renderBadge } from './badge.ts';
@@ -44,7 +44,7 @@ function render(node: ProductDomNode, product: Product | null): void {
 }
 
 function boot(): void {
-  console.info('[Nitide] activé sur Carrefour', location.href);
+  console.info('[Nitide] active on Carrefour', location.href);
 
   const scheduler = new CarrefourScheduler({
     resolve,
