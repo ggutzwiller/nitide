@@ -3,7 +3,7 @@
 // The parser is deliberately narrow: it targets `article` elements whose
 // `data-testid` matches an EAN-13-ish barcode pattern. On Carrefour every
 // product tile in a PLP carries that attribute, and the attribute value *is*
-// the EAN — so we never need to fall back on text search. See
+// the EAN, so we never need to fall back on text search. See
 // `apps/extension/docs/carrefour-dom.md` for the full DOM analysis.
 
 export interface ProductDomNode {

@@ -5,7 +5,7 @@
 //
 // Everything degrades gracefully: any failure (missing asset, corrupt gzip,
 // bad format) resolves to `null`. Callers treat `null` as "every lookup misses"
-// rather than crashing — see src/background/matcher.ts.
+// rather than crashing, see src/background/matcher.ts.
 import { parseScoresDataset, type ScoresDataset } from '@nitide/core';
 
 const ASSET_PATH = 'data/scores-fr.bin.gz';

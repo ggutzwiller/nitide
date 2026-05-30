@@ -46,7 +46,7 @@ export function createDetailResolver(deps: DetailResolverDeps = {}): DetailResol
       if (cache) await cache.set(key, response, detail ? FOUND_TTL_MS : NOT_FOUND_TTL_MS);
       return response;
     } catch {
-      // Transient OFF failure — surface as 'error' and don't cache it.
+      // Transient OFF failure, surface as 'error' and don't cache it.
       return { status: 'error', detail: null };
     }
   }

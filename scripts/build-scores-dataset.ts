@@ -1,4 +1,4 @@
-// Build step 2/2 — pack scripts/off-scores-fr.csv into the binary the extension
+// Build step 2/2, pack scripts/off-scores-fr.csv into the binary the extension
 // bundles. Reuses `serializeScoresDataset` from @nitide/core, so the on-disk
 // format is identical to what the runtime reader expects (the round-trip test
 // in packages/core pins that contract).

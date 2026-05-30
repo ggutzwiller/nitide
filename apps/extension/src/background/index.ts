@@ -17,7 +17,7 @@ import {
 } from '../shared/messages.ts';
 
 // The dataset loads asynchronously (fetch + gunzip), but the onMessage listener
-// below MUST be registered synchronously on the first tick (an MV3 rule — else
+// below MUST be registered synchronously on the first tick (an MV3 rule, else
 // messages arriving during wake-up are dropped). So we register now and build
 // the matcher lazily, once, when the dataset resolves.
 const datasetPromise = loadBundledDataset();
@@ -37,7 +37,7 @@ chrome.runtime.onInstalled.addListener((details) => {
   console.info('[Nitide] service worker installed', details.reason);
 });
 
-// Detail channel: product-page panel lookups — one live OFF request per product.
+// Detail channel: product-page panel lookups, one live OFF request per product.
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (!isDetailRequest(message)) return false;
 
@@ -55,7 +55,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   return true;
 });
 
-// Match channel: list-tile badge lookups — answered from the bundled dataset.
+// Match channel: list-tile badge lookups, answered from the bundled dataset.
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   // Not our message → return false so other listeners can handle it.
   if (!isMatchRequest(message)) return false;

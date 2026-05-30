@@ -10,7 +10,7 @@
 // EANs fit in a JS Number (max EAN-13 ≈ 1e13 < 2^53). Sorting enables binary
 // search at lookup time. The serializer and the reader share `packScoreByte` /
 // `unpackScoreByte`, so the on-disk format can never drift between writer and
-// reader — the round-trip test in this package pins that contract.
+// reader, the round-trip test in this package pins that contract.
 import type { GreenScore, NovaGroup, NutriScore } from './types.ts';
 
 export interface ScoreTriple {

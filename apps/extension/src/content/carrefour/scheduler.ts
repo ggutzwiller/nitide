@@ -5,7 +5,7 @@
 // - Dispatches `resolve` in parallel and hands the result to `render`.
 //
 // Rate limiting used to live here but now belongs to the service worker
-// (see `src/background/matcher.ts`) — it's the single source of truth and
+// (see `src/background/matcher.ts`), it's the single source of truth and
 // shared across tabs.
 //
 // The scheduler is framework-agnostic: `resolve` and `render` are injected so
@@ -49,7 +49,7 @@ export class CarrefourScheduler {
     this.clearTimer = deps.clearTimer ?? ((handle) => clearTimeout(handle));
   }
 
-  /** Register a mutation signal — coalesces into one debounced scan. */
+  /** Register a mutation signal, coalesces into one debounced scan. */
   bump(): void {
     if (this.timer !== null) this.clearTimer(this.timer);
     this.timer = this.setTimer(() => {
