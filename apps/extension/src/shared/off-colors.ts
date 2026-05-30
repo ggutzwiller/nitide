@@ -2,7 +2,7 @@
 // These are what OFF itself uses on its site and in its badges; we reuse them
 // so users recognise the grades at a glance.
 
-import type { GreenScore, NovaGroup, NutriScore } from '@nitide/core';
+import type { GreenScore, Level, NovaGroup, NutriScore } from '@nitide/core';
 
 export const NUTRI_SCORE_COLORS: Record<NutriScore, string> = {
   a: '#008240',
@@ -55,6 +55,20 @@ export const SCORE_KIND_SHORT = {
   green: 'Green',
   nova: 'Nova',
 } as const;
+
+/** Traffic-light colors for nutrient levels (fat / saturated fat / sugars / salt). */
+export const NUTRIENT_LEVEL_COLOR: Record<Level, string> = {
+  low: '#008240',
+  moderate: '#EE8100',
+  high: '#E63312',
+};
+
+// User-facing (FR) — the extension UI is French by design.
+export const NUTRIENT_LEVEL_LABEL: Record<Level, string> = {
+  low: 'Faible',
+  moderate: 'Modéré',
+  high: 'Élevé',
+};
 
 export function contrastTextColor(bg: string): '#FFFFFF' | '#1A1A1A' {
   // Rough luminance on a hex #rrggbb. Light backgrounds (yellow for C, amber for D)

@@ -44,3 +44,6 @@ openfoodfacts-products.jsonl
 # Intermediate subset artefacts produced by scripts/off-subset.sql
 scripts/off-scores-*.csv
 scripts/off-subset.out
+
+# Implementation plans are working artefacts — only specs are versioned.
+docs/superpowers/plans/
