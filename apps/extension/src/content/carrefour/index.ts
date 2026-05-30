@@ -10,6 +10,7 @@ import { renderBadge } from './badge.ts';
 import { CarrefourScheduler } from './scheduler.ts';
 import type { ProductDomNode } from './parser.ts';
 import { MATCH_CHANNEL, type MatchRequest, type MatchResponse } from '../../shared/messages.ts';
+import { syncPdpPanel } from './pdp.ts';
 
 async function resolve(node: ProductDomNode): Promise<Product | null> {
   const message: MatchRequest = {
@@ -52,6 +53,7 @@ function boot(): void {
   });
 
   void scheduler.flush();
+  syncPdpPanel();
 
   let mutationTicks = 0;
   const observer = new MutationObserver(() => {
@@ -73,12 +75,14 @@ function boot(): void {
       console.info(`[Nitide] navigation ${lastHref} → ${location.href}`);
       lastHref = location.href;
       scheduler.bump();
+      syncPdpPanel();
     }
   }, 500);
 
   window.addEventListener('popstate', () => {
     console.info('[Nitide] popstate →', location.href);
     scheduler.bump();
+    syncPdpPanel();
   });
 }
 
