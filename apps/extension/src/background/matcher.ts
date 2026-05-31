@@ -1,12 +1,12 @@
 // Resolves a DOM-extracted product to its scores, using the bundled FR dataset
-// only — no network. A miss returns null (no badge). This is what keeps a full
+// only, no network. A miss returns null (no badge). This is what keeps a full
 // page of tiles at zero network requests, so OFF's rate limit can never bite.
 //
 // If we later want live OFF lookups (hover / product page), that path will be
-// built separately with its own trigger — it deliberately does not exist yet.
+// built separately with its own trigger, it deliberately does not exist yet.
 import type { MatchInput, Product, ScoreTriple, ScoresDataset } from '@nitide/core';
 
-// Where OFF hosts product pages — used to build the "view on Open Food Facts"
+// Where OFF hosts product pages, used to build the "view on Open Food Facts"
 // link on a matched product.
 const OFF_PRODUCT_URL = 'https://world.openfoodfacts.org/product';
 

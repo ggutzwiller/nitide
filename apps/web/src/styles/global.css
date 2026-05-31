@@ -6,6 +6,8 @@
   html {
     @apply bg-cream text-ink antialiased;
     font-family: theme('fontFamily.sans');
+    /* lets `height: 0 -> auto` transitions animate (e.g. the nutrition disclosure) */
+    interpolate-size: allow-keywords;
   }
 
   body {

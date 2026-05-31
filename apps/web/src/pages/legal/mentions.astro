@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Mentions légales - Nitide" description="Mentions légales du site Nitide.">
+  <main class="flex min-h-screen flex-col">
+    <article class="mx-auto w-full max-w-2xl flex-1 px-6 pt-20 pb-16">
+      <a href="/" class="text-sm text-green-dark hover:text-amber-ocre">← Retour à l’accueil</a>
+
+      <h1 class="mt-6 mb-10 text-4xl text-green-dark">Mentions légales</h1>
+
+      <div class="space-y-8 leading-relaxed text-ink">
+        <section>
+          <h2 class="mb-2 text-2xl text-green-dark">Éditeur</h2>
+          <p class="text-ink-muted">
+            Grégoire, projet personnel sans but commercial.<br />
+            Contact : <strong>[à compléter]</strong>
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-2 text-2xl text-green-dark">Hébergeur</h2>
+          <p class="text-ink-muted">
+            GitHub, Inc.<br />
+            88 Colin P. Kelly Jr Street, San Francisco, CA 94107, États-Unis
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-2 text-2xl text-green-dark">Données</h2>
+          <p class="text-ink-muted">
+            Les scores et informations produit affichés proviennent d’<a
+              href="https://openfoodfacts.org"
+              class="text-green-dark underline decoration-green-sage underline-offset-4"
+              rel="noopener">Open Food Facts</a
+            >, sous licence
+            <a
+              href="https://opendatacommons.org/licenses/odbl/"
+              class="text-green-dark underline decoration-green-sage underline-offset-4"
+              rel="noopener">ODbL</a
+            >. Les photos de produits sont issues d’Open Food Facts (CC BY-SA).
+          </p>
+        </section>
+      </div>
+    </article>
+
+    <Footer />
+  </main>
+</Layout>

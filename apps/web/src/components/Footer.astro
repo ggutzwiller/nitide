@@ -1,0 +1,18 @@
+---
+// Shared site footer: Open Food Facts attribution (ODbL), photo credit, legal links.
+const linkClass =
+  'text-green-dark underline decoration-green-sage underline-offset-4 transition hover:decoration-amber-ocre';
+---
+
+<footer class="mt-auto border-t border-border-soft px-6 py-8 text-center text-sm text-ink-muted">
+  <p>
+    Données fournies par
+    <a href="https://openfoodfacts.org" class={linkClass} rel="noopener">Open Food Facts</a>
+    sous licence ODbL
+  </p>
+  <p class="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs">
+    <span>Photos produit : Open Food Facts (CC BY-SA)</span>
+    <a href="/legal/mentions" class={linkClass}>Mentions légales</a>
+    <a href="/legal/privacy" class={linkClass}>Confidentialité</a>
+  </p>
+</footer>

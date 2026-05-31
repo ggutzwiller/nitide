@@ -63,7 +63,7 @@ export const NUTRIENT_LEVEL_COLOR: Record<Level, string> = {
   high: '#E63312',
 };
 
-// User-facing (FR) — the extension UI is French by design.
+// User-facing (FR), the extension UI is French by design.
 export const NUTRIENT_LEVEL_LABEL: Record<Level, string> = {
   low: 'Faible',
   moderate: 'Modéré',

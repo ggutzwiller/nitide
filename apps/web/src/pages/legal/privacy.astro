@@ -1,0 +1,77 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout
+  title="Confidentialité - Nitide"
+  description="Nitide ne collecte aucune donnée personnelle et ne te piste pas."
+>
+  <main class="flex min-h-screen flex-col">
+    <article class="mx-auto w-full max-w-2xl flex-1 px-6 pt-20 pb-16">
+      <a href="/" class="text-sm text-green-dark hover:text-amber-ocre">← Retour à l’accueil</a>
+
+      <h1 class="mt-6 mb-3 text-4xl text-green-dark">Confidentialité</h1>
+      <p class="mb-10 text-lg text-ink-muted">
+        Nitide est conçu pour respecter ta vie privée. En clair : on ne collecte rien.
+      </p>
+
+      <div class="space-y-8 leading-relaxed text-ink">
+        <section>
+          <h2 class="mb-2 text-2xl text-green-dark">Aucune donnée personnelle collectée</h2>
+          <p class="text-ink-muted">
+            Nitide ne collecte, ne stocke et ne transmet aucune donnée personnelle. Pas de compte,
+            pas d’identifiant, pas de profil.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-2 text-2xl text-green-dark">Aucun tracking</h2>
+          <p class="text-ink-muted">
+            Aucun outil d’analyse, aucun cookie publicitaire, aucun pisteur. Ta navigation ne nous
+            est jamais envoyée.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-2 text-2xl text-green-dark">Tout reste sur ton appareil</h2>
+          <p class="text-ink-muted">
+            Les scores affichés sur les listes de produits proviennent d’un jeu de données embarqué
+            dans l’extension : leur calcul se fait <strong>localement</strong>, sans aucun appel
+            réseau. Un cache local (<code>chrome.storage.local</code>) garde les résultats récents
+            pour aller plus vite, et ne quitte jamais ton navigateur.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-2 text-2xl text-green-dark">Seul appel externe : Open Food Facts</h2>
+          <p class="text-ink-muted">
+            Lorsque tu ouvres la <strong>fiche</strong> d’un produit, Nitide interroge l’API publique
+            d’<a
+              href="https://openfoodfacts.org"
+              class="text-green-dark underline decoration-green-sage underline-offset-4"
+              rel="noopener">Open Food Facts</a
+            > pour en afficher le détail. Cette requête ne contient que le code-barres du produit consulté.
+            Aucune information personnelle, aucune authentification.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-2 text-2xl text-green-dark">Permissions de l’extension</h2>
+          <p class="text-ink-muted">
+            Nitide demande le strict nécessaire : <code>storage</code> (le cache local) et l’accès aux
+            sites <code>carrefour.fr</code> (pour afficher les badges) et
+            <code>openfoodfacts.org</code> (pour récupérer les données). Rien d’autre.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-2 text-2xl text-green-dark">Contact</h2>
+          <p class="text-ink-muted">Une question ? Écris à <strong>[à compléter]</strong>.</p>
+        </section>
+      </div>
+    </article>
+
+    <Footer />
+  </main>
+</Layout>

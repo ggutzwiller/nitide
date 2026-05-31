@@ -1,5 +1,5 @@
 // Open Food Facts product-detail model + a minimal live client, rebuilt for M4.
-// Used only on the product page (PDP): one lookup per product, cached — never in
+// Used only on the product page (PDP): one lookup per product, cached, never in
 // the bursty list-page path, so OFF's rate limit can't bite.
 import type { GreenScore, NovaGroup, NutriScore } from './types.ts';
 
@@ -37,7 +37,7 @@ const LEVELS = new Set(['low', 'moderate', 'high']);
 // --- Coercion helpers. OFF's payload is permissive: fields may be missing or
 // have unexpected shapes, so every value is validated before we trust it. ---
 
-/** A score grade letter (a–e), lower-cased, or null. */
+/** A score grade letter (a-e), lower-cased, or null. */
 function grade<T extends string>(value: unknown): T | null {
   return typeof value === 'string' && GRADES.has(value.toLowerCase())
     ? (value.toLowerCase() as T)
@@ -54,7 +54,7 @@ function num(value: unknown): number | undefined {
   return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
-/** A NOVA group (1–4), or null. */
+/** A NOVA group (1-4), or null. */
 function toNova(value: unknown): NovaGroup | null {
   return value === 1 || value === 2 || value === 3 || value === 4 ? value : null;
 }
@@ -190,7 +190,7 @@ export function createDetailClient(deps: DetailClientDeps = {}): DetailClient {
           headers: { Accept: 'application/json' },
         });
 
-        // 429 / 5xx are transient — the caller must not cache them.
+        // 429 / 5xx are transient, the caller must not cache them.
         if (res.status === 429 || res.status >= 500) throw new OffTransientError(res.status);
         // Any other non-OK status (e.g. 404) means "not found".
         if (!res.ok) return null;

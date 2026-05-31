@@ -23,7 +23,7 @@ async function resolve(node: ProductDomNode): Promise<Product | null> {
     console.info(`[Nitide] resolve ${node.ean}: ${product ? 'hit' : 'miss'} (${node.name})`);
     return product;
   } catch (err) {
-    // Worker asleep, extension disabled mid-flight, etc. — degrade gracefully.
+    // Worker asleep, extension disabled mid-flight, etc., degrade gracefully.
     console.warn(`[Nitide] resolve ${node.ean}: rpc failed`, err);
     return null;
   }
@@ -59,7 +59,7 @@ function boot(): void {
   const observer = new MutationObserver(() => {
     mutationTicks++;
     if (mutationTicks === 1 || mutationTicks % 50 === 0) {
-      console.info(`[Nitide] mutation #${mutationTicks} — scheduling scan`);
+      console.info(`[Nitide] mutation #${mutationTicks}, scheduling scan`);
     }
     scheduler.bump();
   });
@@ -67,7 +67,7 @@ function boot(): void {
 
   // Carrefour's SPA uses history.pushState without reloading. Content scripts
   // live in an isolated world so we can't monkey-patch history, but we can
-  // detect navigations by polling location.href — the MutationObserver already
+  // detect navigations by polling location.href, the MutationObserver already
   // covers the DOM changes; this poll simply logs a clear "navigation" marker.
   let lastHref = location.href;
   setInterval(() => {

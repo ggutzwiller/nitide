@@ -175,9 +175,11 @@ function Nutrition({ n }: { n: NonNullable<ProductDetail['nutriments']> }) {
   ];
   const present = rows.filter((entry): entry is [string, string] => entry[1] !== null);
   if (present.length === 0) return null;
+  // Collapsed by default: grocery sites already show the nutrition table, so we
+  // keep it one click away rather than first-glance.
   return (
-    <section class="section">
-      <h3>Valeurs nutritionnelles / 100 g</h3>
+    <details class="section nutrition">
+      <summary>Valeurs nutritionnelles / 100 g</summary>
       <table class="nutri-table">
         <tbody>
           {present.map(([k, v]) => (
@@ -188,7 +190,7 @@ function Nutrition({ n }: { n: NonNullable<ProductDetail['nutriments']> }) {
           ))}
         </tbody>
       </table>
-    </section>
+    </details>
   );
 }
 
@@ -238,6 +240,8 @@ const PANEL_STYLES = /* css */ `
   font-size: 13px;
   line-height: 1.45;
   color: #1A1A1A;
+  /* lets descendant height: 0 -> auto transitions animate (Chrome) */
+  interpolate-size: allow-keywords;
 }
 
 .head {
@@ -301,6 +305,48 @@ const PANEL_STYLES = /* css */ `
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #5C5C5C;
+}
+
+/* Collapsible nutrition section (collapsed by default) */
+.nutrition > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5C5C5C;
+}
+.nutrition > summary::-webkit-details-marker {
+  display: none;
+}
+.nutrition > summary::after {
+  content: '\\25BE';
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+.nutrition[open] > summary {
+  margin-bottom: 10px;
+}
+.nutrition[open] > summary::after {
+  transform: rotate(180deg);
+}
+/* Light open/close animation (Chrome ::details-content; instant fallback elsewhere) */
+.nutrition::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.22s ease,
+    opacity 0.22s ease,
+    content-visibility 0.22s allow-discrete;
+}
+.nutrition[open]::details-content {
+  height: auto;
+  opacity: 1;
 }
 
 /* Score grades */

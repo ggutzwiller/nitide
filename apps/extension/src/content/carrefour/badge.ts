@@ -14,7 +14,7 @@ import { showTooltip, hideTooltip } from './tooltip.tsx';
 
 const HOST_CLASS = 'nitide-badges-host';
 // Where we try to inject, in priority order. Falls back to appending to the
-// article itself if none match — see carrefour-dom.md.
+// article itself if none match, see carrefour-dom.md.
 const PREFERRED_SLOTS = [
   '.product-list-card-plp-grid-new__flags',
   '.product-list-card-plp-grid-new__right-section',
@@ -92,7 +92,7 @@ interface ChipConfig {
 }
 
 /**
- * Renders the three Nitide badges on a tile. Idempotent — rerunning against
+ * Renders the three Nitide badges on a tile. Idempotent, rerunning against
  * the same `element` replaces the previous render so updates (or retries) are
  * safe.
  *

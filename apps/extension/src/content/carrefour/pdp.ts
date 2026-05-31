@@ -58,7 +58,7 @@ export function syncPdpPanel(): void {
   }
   if (!ean || !slot) return;
 
-  // 3. Fetch the detail, then fill the panel — unless we've navigated away since.
+  // 3. Fetch the detail, then fill the panel, unless we've navigated away since.
   const requestedEan = ean;
   void requestDetail(requestedEan).then((res) => {
     if (currentEan !== requestedEan) return;
