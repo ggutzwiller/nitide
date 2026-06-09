@@ -31,7 +31,16 @@ export default defineManifest({
       matches: ['https://www.carrefour.fr/*'],
       run_at: 'document_idle',
     },
+    {
+      js: ['src/content/intermarche/index.ts'],
+      matches: ['https://www.intermarche.com/*'],
+      run_at: 'document_idle',
+    },
   ],
   permissions: ['storage'],
-  host_permissions: ['https://www.carrefour.fr/*', 'https://world.openfoodfacts.org/*'],
+  host_permissions: [
+    'https://www.carrefour.fr/*',
+    'https://www.intermarche.com/*',
+    'https://world.openfoodfacts.org/*',
+  ],
 });

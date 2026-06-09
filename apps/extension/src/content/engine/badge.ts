@@ -1,6 +1,7 @@
-// Injects three mini-badges (Nutri-Score, Green-Score, Nova) inside a Carrefour
-// product tile. Styles live in a Shadow DOM so Carrefour's CSS can't touch us
-// and vice-versa.
+// Injects three mini-badges (Nutri-Score, Green-Score, Nova) inside a product
+// tile. Styles live in a Shadow DOM so the host page's CSS can't touch us and
+// vice-versa. Where exactly to drop the badge inside the tile is a per-retailer
+// decision, passed in as `findSlot`.
 
 import type { GreenScore, NovaGroup, NutriScore, Product } from '@nitide/core';
 import {
@@ -13,12 +14,9 @@ import {
 import { showTooltip, hideTooltip } from './tooltip.tsx';
 
 const HOST_CLASS = 'nitide-badges-host';
-// Where we try to inject, in priority order. Falls back to appending to the
-// article itself if none match, see carrefour-dom.md.
-const PREFERRED_SLOTS = [
-  '.product-list-card-plp-grid-new__flags',
-  '.product-list-card-plp-grid-new__right-section',
-];
+
+/** Picks where, inside a tile, the badge host should be appended. */
+export type SlotFinder = (tile: HTMLElement) => HTMLElement;
 
 const SHADOW_STYLES = /* css */ `
 :host {
@@ -92,15 +90,18 @@ interface ChipConfig {
 }
 
 /**
- * Renders the three Nitide badges on a tile. Idempotent, rerunning against
- * the same `element` replaces the previous render so updates (or retries) are
- * safe.
+ * Renders the three Nitide badges on a tile. Idempotent: rerunning against the
+ * same `tile` replaces the previous render so updates (or retries) are safe.
  *
  * When `product` is `null` we bail out silently: PROJECT.md wants "no badge"
  * rather than a placeholder when OFF has no data for the product.
  */
-export function renderBadge(element: HTMLElement, product: Product | null): void {
-  removeExistingBadge(element);
+export function renderBadge(
+  tile: HTMLElement,
+  product: Product | null,
+  findSlot: SlotFinder,
+): void {
+  removeExistingBadge(tile);
   if (!product) return;
 
   const chips = buildChips(product);
@@ -128,21 +129,12 @@ export function renderBadge(element: HTMLElement, product: Product | null): void
 
   attachHoverHandlers(host, product);
 
-  const slot = findSlot(element);
-  slot.appendChild(host);
+  findSlot(tile).appendChild(host);
 }
 
-function removeExistingBadge(element: HTMLElement): void {
-  const previous = element.querySelectorAll<HTMLElement>(`span.${HOST_CLASS}`);
+function removeExistingBadge(tile: HTMLElement): void {
+  const previous = tile.querySelectorAll<HTMLElement>(`span.${HOST_CLASS}`);
   for (const node of previous) node.remove();
-}
-
-function findSlot(element: HTMLElement): HTMLElement {
-  for (const selector of PREFERRED_SLOTS) {
-    const slot = element.querySelector<HTMLElement>(selector);
-    if (slot) return slot;
-  }
-  return element;
 }
 
 function buildChips(product: Product): ChipConfig[] {

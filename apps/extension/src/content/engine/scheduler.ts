@@ -1,20 +1,21 @@
-// Orchestrates DOM scans on Carrefour:
+// Orchestrates DOM scans on a listing page:
 // - Debounces rescans so bursty mutations (pagination, filter changes,
 //   hydration) collapse into one pass.
 // - Dedupes by EAN so already-processed tiles never trigger a second lookup.
 // - Dispatches `resolve` in parallel and hands the result to `render`.
 //
-// Rate limiting used to live here but now belongs to the service worker
-// (see `src/background/matcher.ts`), it's the single source of truth and
-// shared across tabs.
+// Rate limiting lives in the service worker (see `src/background/matcher.ts`),
+// it's the single source of truth and shared across tabs.
 //
-// The scheduler is framework-agnostic: `resolve` and `render` are injected so
-// we can test the orchestration logic without a real OFF client.
+// The scheduler is retailer-agnostic: `extract`, `resolve` and `render` are all
+// injected, so it works for any site and is testable without a real DOM source.
 
 import type { Product } from '@nitide/core';
-import { extractProductsFromPage, type ProductDomNode } from './parser.ts';
+import type { ProductDomNode } from './types.ts';
 
 export interface SchedulerDeps {
+  /** Extract product tiles from the scan root. */
+  extract: (root: ParentNode) => ProductDomNode[];
   /** Resolve a DOM-extracted product to an OFF product (or null). */
   resolve: (node: ProductDomNode) => Promise<Product | null>;
   /** Render (or clear) the badge for a tile. */
@@ -28,11 +29,12 @@ export interface SchedulerDeps {
   clearTimer?: (handle: ReturnType<typeof setTimeout>) => void;
 }
 
-export class CarrefourScheduler {
+export class Scheduler {
   private readonly seen = new Set<string>();
   private readonly pending: ProductDomNode[] = [];
   private timer: ReturnType<typeof setTimeout> | null = null;
 
+  private readonly extract: SchedulerDeps['extract'];
   private readonly resolve: SchedulerDeps['resolve'];
   private readonly render: SchedulerDeps['render'];
   private readonly root: ParentNode;
@@ -41,6 +43,7 @@ export class CarrefourScheduler {
   private readonly clearTimer: NonNullable<SchedulerDeps['clearTimer']>;
 
   constructor(deps: SchedulerDeps) {
+    this.extract = deps.extract;
     this.resolve = deps.resolve;
     this.render = deps.render;
     this.root = deps.root ?? document;
@@ -60,7 +63,7 @@ export class CarrefourScheduler {
 
   /** Force an immediate scan. Useful on startup and in tests. */
   async flush(): Promise<void> {
-    const tiles = extractProductsFromPage(this.root);
+    const tiles = this.extract(this.root);
     let newCount = 0;
     for (const tile of tiles) {
       if (this.seen.has(tile.ean)) continue;
