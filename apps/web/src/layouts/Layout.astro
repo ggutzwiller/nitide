@@ -21,6 +21,11 @@ const {
     <meta name="theme-color" content="#1F3D2B" />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Marks JS availability so scroll-reveal styles only hide content when the
+         reveal script will actually run (no-JS users see everything). -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

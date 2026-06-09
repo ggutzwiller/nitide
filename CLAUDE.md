@@ -24,15 +24,6 @@ Astro sur nitide.fr. Monorepo pnpm. Tout client-side, zéro back-end, zéro trac
 
 État au 2026-05-30 : **lint clean, typecheck clean, 36 tests verts, build OK** (extension + web).
 
-## Avancement par milestone
-
-- **M1 Scaffold** ✅ — monorepo, stack, CI.
-- **M2 Core** ✅ — `packages/core` : types partagés + le **dataset de scores** (`scores-dataset.ts`). ⚠️ Le client OFF, le cache et le matching API d'origine ont été **supprimés** lors du pivot M3 (cf. ci-dessous) — à reconstruire de zéro si un jour on rebranche l'API.
-- **M3 Extension Carrefour** 🚧 — parser DOM, badge Shadow-DOM, tooltip, scheduler, matcher worker. **Pivot data-source fait** : les scores viennent d'un dataset FR bundlé (lookup local), **aucun appel réseau**. Reste : vérifier le **parsing DOM live** (problème B, non résolu) en conditions réelles.
-- **M4 Fiche produit (PDP)** ⬜ — pas commencé. Fixture `docs/fixtures/product-page.html` gardée pour ça.
-- **M5 Landing complète** ⬜ — `apps/web` n'a qu'un placeholder « bientôt disponible ». Manque hero/features/FAQ + `/legal/privacy` + `/legal/mentions`.
-- **M6 Publication Chrome Web Store** ⬜.
-
 ## Architecture — points à ne pas réapprendre
 
 - **Deux mondes isolés + passage de messages** : le content script vit dans la page Carrefour (voit le DOM), le service worker dans un contexte `chrome-extension://` (charge le dataset bundlé). Ils ne partagent pas de mémoire → RPC via `chrome.runtime.sendMessage` / `onMessage` (canal `MATCH_CHANNEL`, `src/shared/messages.ts`). Le worker répond depuis le dataset, **sans aucun appel réseau**.

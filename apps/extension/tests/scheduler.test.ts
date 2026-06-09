@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Product } from '@nitide/core';
-import { CarrefourScheduler } from '../src/content/carrefour/scheduler.ts';
+import { Scheduler } from '../src/content/engine/scheduler.ts';
+import { extractProductsFromPage } from '../src/content/carrefour/retailer.ts';
 
 function buildTile(ean: string, name = 'Something'): HTMLElement {
   const article = document.createElement('article');
@@ -22,7 +23,7 @@ const FAKE_PRODUCT: Product = {
   offUrl: '',
 };
 
-describe('CarrefourScheduler', () => {
+describe('Scheduler', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
   });
@@ -34,7 +35,8 @@ describe('CarrefourScheduler', () => {
     const resolved: string[] = [];
     const rendered: string[] = [];
 
-    const scheduler = new CarrefourScheduler({
+    const scheduler = new Scheduler({
+      extract: extractProductsFromPage,
       resolve: async (node) => {
         resolved.push(node.ean);
         return FAKE_PRODUCT;
@@ -53,7 +55,11 @@ describe('CarrefourScheduler', () => {
     document.body.appendChild(buildTile('3017620422003'));
 
     const resolve = vi.fn(async () => FAKE_PRODUCT);
-    const scheduler = new CarrefourScheduler({ resolve, render: () => {} });
+    const scheduler = new Scheduler({
+      extract: extractProductsFromPage,
+      resolve,
+      render: () => {},
+    });
 
     await scheduler.flush();
     await scheduler.flush();
@@ -65,7 +71,8 @@ describe('CarrefourScheduler', () => {
 
     const resolve = vi.fn(async () => FAKE_PRODUCT);
     let pendingFn: (() => void) | null = null;
-    const scheduler = new CarrefourScheduler({
+    const scheduler = new Scheduler({
+      extract: extractProductsFromPage,
       resolve,
       render: () => {},
       debounceMs: 300,
@@ -93,7 +100,8 @@ describe('CarrefourScheduler', () => {
     document.body.appendChild(buildTile('3017620422003'));
 
     const rendered: Array<Product | null> = [];
-    const scheduler = new CarrefourScheduler({
+    const scheduler = new Scheduler({
+      extract: extractProductsFromPage,
       resolve: async () => {
         throw new Error('boom');
       },

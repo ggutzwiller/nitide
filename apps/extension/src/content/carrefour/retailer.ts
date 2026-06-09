@@ -1,23 +1,24 @@
-// Extracts product tiles from a Carrefour listing page.
+// Carrefour adapter: all the carrefour.fr DOM specifics in one place.
 //
-// The parser is deliberately narrow: it targets `article` elements whose
-// `data-testid` matches an EAN-13-ish barcode pattern. On Carrefour every
-// product tile in a PLP carries that attribute, and the attribute value *is*
-// the EAN, so we never need to fall back on text search. See
-// `apps/extension/docs/carrefour-dom.md` for the full DOM analysis.
+// On Carrefour every product tile in a PLP is an `<article>` whose `data-testid`
+// *is* the EAN, so we never need a text search. PDP URLs are `/p/<slug>-<ean>`.
+// See `apps/extension/docs/carrefour-dom.md` for the full DOM analysis.
 
-export interface ProductDomNode {
-  element: HTMLElement;
-  ean: string;
-  name: string;
-  brand?: string;
-  href?: string;
-}
+import type { ProductDomNode, Retailer } from '../engine/types.ts';
 
 const EAN_PATTERN = /^\d{8,14}$/;
-// Kept for legacy tiles that may drop `data-testid` during A/B tests but keep
-// a canonical product URL of the form `/p/<slug>-<ean>`.
+// Legacy tiles may drop `data-testid` during A/B tests but keep a canonical
+// product URL of the form `/p/<slug>-<ean>`.
 const EAN_FROM_SLUG = /-(\d{8,14})(?:[?#]|$)/;
+const PDP_EAN = /\/p\/[^?#]*-(\d{8,14})(?:[?#]|$)/;
+
+// Where we try to inject the badge, in priority order. Falls back to the
+// article itself if none match. See carrefour-dom.md.
+const BADGE_SLOTS = [
+  '.product-list-card-plp-grid-new__flags',
+  '.product-list-card-plp-grid-new__right-section',
+];
+const PANEL_SLOTS = ['.pdp-hero-wrapper__badges', '.pdp-hero-wrapper'];
 
 export function extractProductsFromPage(root: ParentNode = document): ProductDomNode[] {
   const tiles = root.querySelectorAll<HTMLElement>('article[data-testid]');
@@ -83,3 +84,36 @@ function readHref(element: HTMLElement): string | undefined {
   const href = link?.getAttribute('href');
   return href ?? undefined;
 }
+
+/** Returns the main product's EAN from a Carrefour PDP URL, or null. */
+export function extractPdpEan(url: string): string | null {
+  const match = PDP_EAN.exec(url);
+  return match ? match[1]! : null;
+}
+
+function findPanelSlot(): HTMLElement | null {
+  for (const selector of PANEL_SLOTS) {
+    const el = document.querySelector<HTMLElement>(selector);
+    if (el) return el;
+  }
+  const h1 = document.querySelector('h1');
+  return h1?.parentElement ?? null;
+}
+
+export const carrefourRetailer: Retailer = {
+  id: 'carrefour',
+  extractProducts: extractProductsFromPage,
+  findLiveTile: (node) =>
+    document.querySelector<HTMLElement>(`article[data-testid="${CSS.escape(node.ean)}"]`),
+  findBadgeSlot: (tile) => {
+    for (const selector of BADGE_SLOTS) {
+      const slot = tile.querySelector<HTMLElement>(selector);
+      if (slot) return slot;
+    }
+    return tile;
+  },
+  pdp: {
+    extractEan: extractPdpEan,
+    findPanelSlot,
+  },
+};

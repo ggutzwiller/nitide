@@ -1,0 +1,82 @@
+<!-- Trimmed but faithful slice of a real www.intermarche.com product page
+     (/produit/cookies-.../3250393471643). Keeps what the PDP slot logic reads:
+     the hero summary card is rendered twice (a md:hidden mobile twin and a
+     desktop twin), each carrying the product <h1>. A "Vous aimerez aussi"
+     carousel tile (product-layout) is included to confirm the panel anchors on
+     the main product, not on a carousel card. -->
+<main id="app__main" class="app__main" role="main">
+  <div class="bg-bg-secondary">
+    <div class="mx-auto w-full">
+      <div class="flex min-h-[485px] flex-col gap-8 pb-16 pt-4 md:flex-row md:gap-16">
+        <!-- Left column: image carousel + mobile-only summary twin -->
+        <div class="relative flex w-full flex-col gap-8 rounded-16 bg-bg-primary p-12 md:w-1/2">
+          <div class="md:hidden">
+            <div class="rounded-8 mt-80 bg-white p-8 md:mt-0" data-twin="mobile">
+              <h1 class="text-inherit flex flex-col">
+                <span class="font-bold">Chabrior, une marque Intermarché</span>Cookies maxi pépites
+                éclats de chocolat noir saveur cacahuète
+              </h1>
+              <p class="text-grey-700">le paquet de 184 g | 9,02 €/Kg</p>
+              <div class="mt-8 mb-12 flex items-center gap-16">
+                <span class="h-[45px] w-[90px]"
+                  ><img alt="nutriscore/score=E" src="/icons/nutriscore/score=E.svg"
+                /></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: desktop summary twin + price + accordions -->
+        <div class="flex max-h-[485px] w-full flex-col overflow-auto md:w-1/2">
+          <div class="rounded-8 mt-80 bg-white p-8 md:mt-0" data-twin="desktop">
+            <h1 class="text-inherit flex flex-col">
+              <span class="font-bold">Chabrior, une marque Intermarché</span>Cookies maxi pépites
+              éclats de chocolat noir saveur cacahuète
+            </h1>
+            <p class="text-grey-700">le paquet de 184 g | 9,02 €/Kg</p>
+            <div class="mt-8 mb-12 flex items-center gap-16">
+              <span class="h-[45px] w-[90px]"
+                ><img alt="nutriscore/score=E" src="/icons/nutriscore/score=E.svg"
+              /></span>
+            </div>
+          </div>
+          <div class="pdpV2-primary-price_e2e rounded-8 sticky mt-8 bg-white p-8">
+            <div class="product--price" data-testid="default">
+              <p class="js-formatted">1,66 €</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- "Vous aimerez aussi" carousel: a normal listing tile -->
+      <section class="relative">
+        <ul>
+          <li>
+            <div class="productLayout stime-product-layout" data-testid="product-layout">
+              <div class="stime-product-card-course">
+                <a
+                  class="link flex flex-col no-underline"
+                  href="/produit/petits-cookies-pepites-de-chocolat/3178530407396"
+                >
+                  <div class="stime-product--details VERTICAL">
+                    <div class="stime-product--details__summary">
+                      <div><p class="font-bold">Bonne Maman</p></div>
+                      <div>
+                        <h2 class="stime-product--details__title">
+                          Petits cookies pépites de chocolat
+                        </h2>
+                        <p class="stime-product--details__packaging text-grey-500">
+                          le paquet de 22 - 250g • 9,48 €/Kg
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</main>
