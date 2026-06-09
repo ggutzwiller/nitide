@@ -92,9 +92,7 @@ export const intermarcheRetailer: Retailer = {
   extractProducts: extractProductsFromPage,
   findLiveTile: (node) => {
     const safe = CSS.escape(node.ean);
-    return document.querySelector<HTMLElement>(
-      `${TILE_SELECTOR}:has(a[href$="/${safe}"])`,
-    );
+    return document.querySelector<HTMLElement>(`${TILE_SELECTOR}:has(a[href$="/${safe}"])`);
   },
   findBadgeSlot: (tile) =>
     tile.querySelector<HTMLElement>('.stime-product--details__summary') ??

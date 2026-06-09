@@ -114,15 +114,15 @@ describe('extractTile — defensive paths', () => {
 
 describe('extractPdpEan', () => {
   it('extracts the EAN from a product URL', () => {
-    expect(
-      extractPdpEan('https://www.intermarche.com/produit/cookies-maxi/3250393471643'),
-    ).toBe('3250393471643');
+    expect(extractPdpEan('https://www.intermarche.com/produit/cookies-maxi/3250393471643')).toBe(
+      '3250393471643',
+    );
   });
 
   it('handles query/hash suffixes', () => {
-    expect(
-      extractPdpEan('https://www.intermarche.com/produit/x/3250393471643?utm=1#avis'),
-    ).toBe('3250393471643');
+    expect(extractPdpEan('https://www.intermarche.com/produit/x/3250393471643?utm=1#avis')).toBe(
+      '3250393471643',
+    );
   });
 
   it('returns null on listing and non-product pages', () => {

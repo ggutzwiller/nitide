@@ -35,7 +35,8 @@ describe('Scheduler', () => {
     const resolved: string[] = [];
     const rendered: string[] = [];
 
-    const scheduler = new Scheduler({ extract: extractProductsFromPage,
+    const scheduler = new Scheduler({
+      extract: extractProductsFromPage,
       resolve: async (node) => {
         resolved.push(node.ean);
         return FAKE_PRODUCT;
@@ -54,7 +55,11 @@ describe('Scheduler', () => {
     document.body.appendChild(buildTile('3017620422003'));
 
     const resolve = vi.fn(async () => FAKE_PRODUCT);
-    const scheduler = new Scheduler({ extract: extractProductsFromPage, resolve, render: () => {} });
+    const scheduler = new Scheduler({
+      extract: extractProductsFromPage,
+      resolve,
+      render: () => {},
+    });
 
     await scheduler.flush();
     await scheduler.flush();
@@ -66,7 +71,8 @@ describe('Scheduler', () => {
 
     const resolve = vi.fn(async () => FAKE_PRODUCT);
     let pendingFn: (() => void) | null = null;
-    const scheduler = new Scheduler({ extract: extractProductsFromPage,
+    const scheduler = new Scheduler({
+      extract: extractProductsFromPage,
       resolve,
       render: () => {},
       debounceMs: 300,
@@ -94,7 +100,8 @@ describe('Scheduler', () => {
     document.body.appendChild(buildTile('3017620422003'));
 
     const rendered: Array<Product | null> = [];
-    const scheduler = new Scheduler({ extract: extractProductsFromPage,
+    const scheduler = new Scheduler({
+      extract: extractProductsFromPage,
       resolve: async () => {
         throw new Error('boom');
       },
