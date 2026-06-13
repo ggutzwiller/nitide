@@ -93,7 +93,7 @@ interface ChipConfig {
  * Renders the three Nitide badges on a tile. Idempotent: rerunning against the
  * same `tile` replaces the previous render so updates (or retries) are safe.
  *
- * When `product` is `null` we bail out silently: PROJECT.md wants "no badge"
+ * When `product` is `null` we bail out silently: we show no badge at all
  * rather than a placeholder when OFF has no data for the product.
  */
 export function renderBadge(

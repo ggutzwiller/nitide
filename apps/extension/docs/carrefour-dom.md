@@ -59,7 +59,7 @@ Fallback: if `__flags` is missing (class rename), append the host as the last ch
 
 ## OFF rate-limit reality check
 
-PROJECT.md said "10 req/sec côté client". The official OFF limits are different:
+An earlier estimate assumed "10 req/sec côté client". The official OFF limits are different:
 
 - `/api/v2/product/{ean}` — **100 req/min** (≈ 1.67 req/s sustained)
 - `/api/v2/search` — **10 req/min** (very low)

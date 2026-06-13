@@ -1,7 +1,7 @@
 # Design — Landing complète (M5, étapes 1-6)
 
 > Date : 2026-05-30 · Statut : approuvé · Milestone : M5 (hors déploiement)
-> Charte : [PROJECT.md](../../../PROJECT.md) · Maquette : `landing-demo-preview.html` (racine, temporaire)
+> Maquette : `landing-demo-preview.html` (racine, temporaire)
 
 ## Objectif
 

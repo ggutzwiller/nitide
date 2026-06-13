@@ -1,7 +1,7 @@
 # Design — M4 : panneau détaillé sur la fiche produit Carrefour
 
 > Date : 2026-05-30 · Statut : approuvé · Milestone : M4
-> Charte : [PROJECT.md](../../../PROJECT.md) · Notes : [CLAUDE.md](../../../CLAUDE.md)
+> Notes : [CLAUDE.md](../../../CLAUDE.md)
 > Maquette de référence : `panel-preview.html` (racine, temporaire)
 
 ## 1. Contexte & objectif
