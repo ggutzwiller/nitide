@@ -1,7 +1,7 @@
 # Design — Dataset de scores bundlé (pivot data-source M3)
 
 > Date : 2026-05-30 · Statut : approuvé · Milestone : M3
-> Charte de référence : [PROJECT.md](../../../PROJECT.md) · Notes : [CLAUDE.md](../../../CLAUDE.md)
+> Notes : [CLAUDE.md](../../../CLAUDE.md)
 
 > **Note d'implémentation (post-revue).** À la revue de code, le périmètre a été **simplifié en dataset-only** : le mode `remote-ok` et tout le code d'appel à l'API OFF (client, cache, throttle, retry, recherche texte) ont été **supprimés** plutôt que gardés dormants. Le matcher fait uniquement un lookup local ; un produit absent du dataset n'a pas de badge. Un éventuel lookup live (survol/fiche) sera reconstruit de zéro avec son déclencheur. Les sections ci-dessous décrivent le design approuvé d'origine ; le `mode`/`remote-ok` et les composants API qu'elles mentionnent ne sont donc pas dans le code final.
 

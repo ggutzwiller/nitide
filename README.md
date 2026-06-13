@@ -3,7 +3,6 @@
 Chrome extension that surfaces [Open Food Facts](https://openfoodfacts.org) scores (Nutri-Score, Green-Score, Nova) on online grocery websites. Starts with Carrefour.fr.
 
 - Landing: <https://nitide.fr>
-- Charter: [PROJECT.md](./PROJECT.md) — the source of truth for all product and technical decisions. Read it before contributing.
 
 ## Repository layout
 
