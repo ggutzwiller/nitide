@@ -7,3 +7,5 @@ coverage
 pnpm-lock.yaml
 apps/extension/public/icons
 apps/web/public
+# Captured raw HTML from retailer sites (verbatim test data, often malformed)
+apps/extension/docs/fixtures
