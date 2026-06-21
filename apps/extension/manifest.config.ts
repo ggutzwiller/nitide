@@ -36,7 +36,16 @@ export default defineManifest({
       matches: ['https://www.intermarche.com/*'],
       run_at: 'document_idle',
     },
+    {
+      js: ['src/content/coursesu/index.ts'],
+      matches: ['https://www.coursesu.com/*'],
+      run_at: 'document_idle',
+    },
   ],
   permissions: ['storage'],
-  host_permissions: ['https://www.carrefour.fr/*', 'https://www.intermarche.com/*'],
+  host_permissions: [
+    'https://www.carrefour.fr/*',
+    'https://www.intermarche.com/*',
+    'https://www.coursesu.com/*',
+  ],
 });
